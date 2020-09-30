@@ -1,13 +1,40 @@
 import React from 'react';
-import {View, Text, Button} from 'react-native';
+import {Text, Image, SafeAreaView, View, Button, Linking} from 'react-native';
 
-const DetailScreen = ({navigation}) => {
-  const onPress = () => navigation.navigate('Home');
+const DetailScreen = (props) => {
+  const {data} = props.route.params;
+  props.navigation.setOptions({
+    title: data.title,
+  });
   return (
-    <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-      <Text>Detail screen!</Text>
-      <Button onPress={onPress} title="return home" color="#841584" />
-    </View>
+    <SafeAreaView
+      style={{flex: 1, alignItems: 'center', justifyContent: 'flex-start'}}>
+      <Image
+        style={{width: '100%', height: '50%'}}
+        source={{uri: data.enclosure.link}}
+      />
+      <View style={{flexDirection: 'column', padding: 10, flex: 1}}>
+        <Text style={{fontSize: 16, fontWeight: 'bold'}}>{data.title}</Text>
+        <Text
+          style={{
+            fontSize: 12,
+            fontWeight: 'normal',
+            marginTop: 5,
+            marginBottom: 5,
+            color: 'grey',
+          }}>
+          {data.pubDate}
+        </Text>
+        <Text style={{fontSize: 14, fontWeight: 'normal', marginBottom: 50}}>
+          {data.description}
+        </Text>
+        <Button
+          onPress={() => Linking.openURL(data.link)}
+          title="Ver en el navegador"
+          color="#841584"
+        />
+      </View>
+    </SafeAreaView>
   );
 };
 

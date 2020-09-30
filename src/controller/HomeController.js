@@ -10,7 +10,11 @@ const HomeController = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Home">
-        <Stack.Screen name={'Home'} component={HomeScreen} />
+        <Stack.Screen
+          name={'Home'}
+          component={HomeScreen}
+          options={{headerTitleStyle: {alignSelf: 'center'}}}
+        />
         <Stack.Screen name={'Detail'} component={DetailScreen} />
       </Stack.Navigator>
     </NavigationContainer>
