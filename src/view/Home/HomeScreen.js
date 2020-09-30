@@ -8,30 +8,57 @@ import {
   TouchableOpacity,
 } from 'react-native';
 
+import {setNews as setNewsContext} from '../../context/actions/index';
+import {useStateValue} from '../../context/StateContext';
+import {getData, saveData} from '../../helpers/storage/asyncStorage';
+
 const HomeScreen = ({navigation}) => {
-  const [news, setNews] = useState([]);
+  const [state, dispatch] = useStateValue();
+
   useEffect(() => {
     getNews();
   }, []);
+
   const getNews = () => {
     const RSS_TO_JSON_API = 'https://api.rss2json.com/v1/api.json?rss_url=';
     const url = 'http://www.nasa.gov/rss/dyn/breaking_news.rss';
     fetch(RSS_TO_JSON_API + encodeURI(url))
       .then((res) => res.json())
       .then((res) => {
-        setNews(res.items);
-        navigation.setOptions({
-          title: res.feed.title,
-        });
+        if (res && res.items) {
+          saveData('news', res);
+          dispatch(setNewsContext(res));
+          navigation.setOptions({
+            title: res.feed.title,
+          });
+        } else {
+          throw new Error('error');
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+        getSavedNews();
+      });
+  };
+  const getSavedNews = () => {
+    getData('news')
+      .then((news) => {
+        if (news) {
+          dispatch(setNewsContext(news));
+          console.log('hay news');
+        } else {
+          console.log('no hay news');
+        }
       })
       .catch((err) => console.log(err));
   };
+
   const onPress = (data) => navigation.navigate('Detail', {data});
   return (
     <ScrollView style={{backgroundColor: 'white'}}>
       <SafeAreaView>
-        {news &&
-          news.map((n, i) => (
+        {state && state.news &&
+          state.news.items.map((n, i) => (
             <TouchableOpacity
               style={{
                 flex: 1,

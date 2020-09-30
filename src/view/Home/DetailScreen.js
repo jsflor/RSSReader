@@ -1,11 +1,17 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {Text, Image, SafeAreaView, View, Button, Linking} from 'react-native';
+// import {useStateValue} from '../../context/StateContext';
 
 const DetailScreen = (props) => {
+  // const [state, dispatch] = useStateValue();
   const {data} = props.route.params;
-  props.navigation.setOptions({
-    title: data.title,
-  });
+
+  useEffect(() => {
+    props.navigation.setOptions({
+      title: data.title,
+    });
+  }, []);
+
   return (
     <SafeAreaView
       style={{flex: 1, alignItems: 'center', justifyContent: 'flex-start'}}>
